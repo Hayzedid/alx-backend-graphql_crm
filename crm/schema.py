@@ -12,7 +12,7 @@ from .filters import CustomerFilter, ProductFilter, OrderFilter
 class CustomerType(DjangoObjectType):
     class Meta:
         model = Customer
-        fields = "__all__"
+        fields = ("id", "name", "email", "phone")
         filter_fields = {
             'name': ['exact', 'icontains'],
             'email': ['exact', 'icontains'],
@@ -275,7 +275,7 @@ class Query(graphene.ObjectType):
     hello = graphene.String()
     
     # Basic queries
-    all_customers = DjangoFilterConnectionField(CustomerType, filterset_class=CustomerFilter)
+    all_customers = graphene.List(CustomerType)
     all_products = DjangoFilterConnectionField(ProductType, filterset_class=ProductFilter)
     all_orders = DjangoFilterConnectionField(OrderType, filterset_class=OrderFilter)
     
@@ -286,6 +286,9 @@ class Query(graphene.ObjectType):
 
     def resolve_hello(self, info):
         return "Hello, GraphQL!"
+
+    def resolve_all_customers(self, info):
+        return Customer.objects.all()
 
     def resolve_customer(self, info, id):
         try:
