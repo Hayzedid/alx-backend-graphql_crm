@@ -53,7 +53,7 @@ def log_crm_heartbeat():
             # If file writing fails, at least print to console
             print(error_message)
 
-def updatelowstock():
+def update_low_stock():
     """
     Execute UpdateLowStockProducts mutation via GraphQL endpoint.
     Logs updated product names and new stock levels.
@@ -89,7 +89,7 @@ def updatelowstock():
         if mutation_result.get('success'):
             updated_products = mutation_result.get('updatedProducts', [])
             
-            with open('/tmp/lowstockupdates_log.txt', 'a') as f:
+            with open('/tmp/low_stock_updates_log.txt', 'a') as f:
                 f.write(f"[{timestamp}] Low stock update successful\n")
                 
                 if updated_products:
@@ -99,10 +99,10 @@ def updatelowstock():
                     f.write(f"[{timestamp}] No products required stock updates\n")
         else:
             error_msg = mutation_result.get('message', 'Unknown error')
-            with open('/tmp/lowstockupdates_log.txt', 'a') as f:
+            with open('/tmp/low_stock_updates_log.txt', 'a') as f:
                 f.write(f"[{timestamp}] Low stock update failed: {error_msg}\n")
                 
     except Exception as e:
         timestamp = datetime.now().strftime('%d/%m/%Y-%H:%M:%S')
-        with open('/tmp/lowstockupdates_log.txt', 'a') as f:
-            f.write(f"[{timestamp}] Exception in updatelowstock: {str(e)}\n")
+        with open('/tmp/low_stock_updates_log.txt', 'a') as f:
+            f.write(f"[{timestamp}] Exception in update_low_stock: {str(e)}\n")
